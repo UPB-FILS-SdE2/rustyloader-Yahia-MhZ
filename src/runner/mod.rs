@@ -1,6 +1,8 @@
 use nix::libc::{Elf32_Ehdr, Elf32_Phdr};
 use std::arch::asm;
 use std::env;
+use std::ffi::CStr;
+use std::ptr;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -37,24 +39,17 @@ pub fn exec_run(base_address: usize, entry_point: usize) {
 
         // skip environment variables
         while !(*env).is_null() {
-            // use std::ffi::CStr;
-            // let arg: &CStr = unsafe { CStr::from_ptr(*env as *const i8) };
-            // let arg_slice: &str = arg.to_str().unwrap();
-            // println!("env {}", arg_slice);
             env = env.offset(1);
         }
-
-        // println!("printed arguments");
 
         env = env.offset(1);
 
         auxv = &mut *(env as *mut u8 as *mut Elf32AuxV);
 
-        // get a pointer to the arguments (env - NULL args length - 1 - length)
         let argv = environ.offset(-(env::args().len() as isize + 2));
 
         *argv.offset(2) = *argv.offset(1);
-        *argv.offset(1) = (env::args().len()-1) as *mut u8;
+        *argv.offset(1) = (env::args().len() - 1) as *mut u8;
 
         argv.offset(1)
     };
