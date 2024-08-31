@@ -4,3 +4,5 @@
 ## Solution
 
 TODO Décrivez ici comment avez-vous résolu les devoirs. 
+J'ai ajouté du code pour lire et analyser les segments du fichier ELF. Les segments sont ensuite affichés au format requis. J'ai également ajouté la gestion des adresses de base et du point d'entrée pour l'exécutable.
+et J'ai implemente un gestionnaire de signal pour intercepter les défauts de page (SIGSEGV). Ce gestionnaire vérifiera si l'adresse fautive appartient à un segment du fichier ELF et chargera la page correspondante en mémoire si nécessaire.
